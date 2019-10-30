@@ -5,7 +5,7 @@
     "author": "Willy",
     "cssLibraries": ["bulma@0.x"],
     "jsLibraries": [],
-    "jsPath": "script_2.js",
+    "jsPath": "script_1.js",
     "cssPath": "style.css",
     "htmlPath": "index.html"
   },

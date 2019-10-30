@@ -88,4 +88,8 @@ npm run dappy:push
 # load "unforgeable_name_id" in Dappy browser
 ```
 
-Now simply click on the body and wait a bit, the body's color should change.
+Now simply click on the body, fill the inputs with correct values, and wait a bit, the body's color should change.
+
+This tutorial is over. You can share the blockchain address with anyone connected to the same dappy network, since we have not coded any permission related code, anyone can change the value as well.
+
+This architecture does not need any server or third party service to leave, it is strictly dependand on the blockchain platform and the Dappy network that is referenced in Dappy browser (the Dappy network is a subset of the blockchain platform).
