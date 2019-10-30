@@ -1,0 +1,29 @@
+new basket, dapp, publickey, updateFile, toggleLight, toggleLightUriCh, light, insertArbitrary(`rho:registry:insertArbitrary`) in {
+  publickey!!("PUBLIC_KEY") |
+  dapp!("DAPPY_FILE") |
+  light!("on") |
+
+  for (_ <= toggleLight) {
+    for (current <- light) {
+      match *current {
+        "on" => {
+          light!("off")
+        }
+        "off" => {
+          light!("on")
+        }
+      }
+    }
+  } |
+
+  insertArbitrary!(*toggleLight, *toggleLightUriCh) |
+
+  for (uri <- toggleLightUriCh) {
+    basket!({
+      "unforgeable_name": *dapp,
+      "registry_uri": *uri,
+      "unforgeable_name_light": *light
+    })
+  }
+
+}

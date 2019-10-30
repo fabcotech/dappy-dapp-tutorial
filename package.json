@@ -1,0 +1,27 @@
+{
+  "name": "dappy-dapp-tutorial",
+  "version": "0.0.1",
+  "description": "This repo is a tutorial to help you build cool decentralized web applications with Dappy.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "webpack --mode development --watch",
+    "build": "webpack --mode production",
+    "dappy:init": "node ./node_modules/dappy-cli/lib/ init",
+    "dappy:build": "node ./node_modules/dappy-cli/lib/ build",
+    "dappy:push": "node ./node_modules/dappy-cli/lib/ push",
+    "dappy:update": "node ./node_modules/dappy-cli/lib/ update",
+    "dappy:watch": "node ./node_modules/dappy-cli/lib/ update --watch"
+  },
+  "author": "FABCO",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {
+    "dappy-cli": "git+https://github.com/fabcotech/dappy-cli.git"
+  },
+  "keywords": [
+    "rchain",
+    "blockchain",
+    "dappy",
+    "dapp"
+  ]
+}
