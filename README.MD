@@ -24,6 +24,7 @@ in this first step, we will simply push a static web application on chain. Our w
 
 ```
 npm run dappy:push
+# load "unforgeable_name_id" in Dappy browser
 ```
 
 Each time you run this scripts, it bundles your application together in a html file, encodes it to base64 and also adds a signature so the client can verify the file. The file that will be sent on chain is a `.dpy` file, you can see in the logs that a `.dpy` has been created and weights ~0.8ko .
@@ -93,13 +94,17 @@ npm run dappy:push
 
 Now simply click on the body, fill the inputs with correct values, and wait a bit, the body's color should change . As you see, the main constraint with Dappy's dapp is that everything must be on the blockchain, the files, and the dynamic or static values, this means that everytime you need to store something, it cannot be done without a blockchain transaction .
 
+### That's it
+
+Turn off one of the two endpoints `a2.dappy.tech`, notice that the app can still load, Dappy simply skips the first one and tries to load the web application from another available endpoint .
+
 This tutorial is over . You can share the blockchain address with anyone connected to the same dappy network, since we have not coded any permission related code, anyone can change the value as well .
 
-This architecture does not need any server or third party service to leave, it is strictly dependand on the blockchain platform and the Dappy network that is referenced in Dappy browser (the Dappy network is a subset of the blockchain platform) .
+This architecture does not need any server or third party service to exist, it is strictly relying on the blockchain platform and the Dappy network that is referenced in Dappy browser (the Dappy network is a subset of the blockchain platform) .
 
 ### Going further
 
-- You can very easily by a name, and link it to the web application you just deployed, see settings / names section in Dappy .
+- You can very easily buy a name, and link it to the web application you just deployed, see settings / names section in Dappy . This will add a security layer to your infrastructure, **the file will be tested against the public key that is linked to the name each time it is loaded in Dappy**.
 - You might need to identify the user in your code (ask him to give the proof that he has a given private key), you can do it by using `dappyRChain.identify` (not documented yet) .
 - Your app might need to communicate with a private server, for now **all the http/https calls are blocked by Dappy** . Go in the Settings / names / purchase name section, you will see that when purchasing a name, you are also able to reference some servers your dapp will be allowed to communicate with, this is how it happens .
 - You can deploy a web application that do not use a file stored on the blockchain, but communicates with a private server only, this is called an **IP** application, you can deploy one very easily on Dappy 0.2.5+ (not documented yet) .
