@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "This repo is a tutorial to help you build cool decentralized web applications with Dappy.",
   "main": "src/index.js",
+  "repository": "https://github.com/fabcotech/dappy-dapp-tutorial",
   "scripts": {
     "start": "webpack --mode development --watch",
     "build": "webpack --mode production",

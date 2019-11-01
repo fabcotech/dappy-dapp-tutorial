@@ -13,8 +13,8 @@
     "platform": "rchain",
     "host": "localhost",
     "port": "40401",
-    "private_key": "4b58483d54ed7b27528218e082461e3254a335310b17ad42e3593fe9ed5a09dd",
-    "public_key": "045f12959557c8d1926d768cc246b75d2fdd6cc89b4c9960bb88db9e1cc1e4a8dffa7aeea5fca0a59cc383e2db24afd486f9b2381bf927eb141d9be9a1f886b3ab",
+    "private_key": "",
+    "public_key": "",
     "registry_uri": "",
     "unforgeable_name_id": ""
   }
