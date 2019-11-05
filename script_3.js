@@ -5,6 +5,7 @@ const checkLight = () => {
   dappyRChain.fetch('dappy://rchain/alphanetwork/' + lightUnforgeableName)
     .then(a => {
       const rholangTerm = JSON.parse(a);
+      console.log('lightUnforgeableName : ', rholangTerm);
       if (rholangTerm.exprs[0].g_string === 'on') {
         document.body.setAttribute('style', 'background: #FAFAFA;color:#000;');
         document.body.innerText = 'Light is on !\n\nclick to switch';
