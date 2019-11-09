@@ -17,7 +17,7 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "dappy-cli": "git+https://github.com/fabcotech/dappy-cli.git"
+    "dappy-cli": "0.2.4"
   },
   "keywords": [
     "rchain",
