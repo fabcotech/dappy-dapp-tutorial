@@ -11,8 +11,9 @@
   },
   "options": {
     "platform": "rchain",
-    "host": "a1.dappy.tech",
+    "host": "localhost",
     "port": "40401",
+    "httpPort": "40403",
     "private_key": "",
     "public_key": "",
     "registry_uri": "",
