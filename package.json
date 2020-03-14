@@ -1,6 +1,6 @@
 {
   "name": "dappy-dapp-tutorial",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "This repo is a tutorial to help you build cool decentralized web applications with Dappy.",
   "main": "src/index.js",
   "repository": "https://github.com/fabcotech/dappy-dapp-tutorial",
@@ -17,7 +17,7 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "dappy-cli": "0.2.8"
+    "dappy-cli": "0.3.5"
   },
   "keywords": [
     "rchain",

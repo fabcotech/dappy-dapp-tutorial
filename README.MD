@@ -1,8 +1,10 @@
-This repo is a tutorial to help you build cool decentralized web applications with Dappy.
+This repo is a tutorial to help you build cool decentralized web applications with Dappy 🐸🐸🐸.
 
-Along this tutorial, we will build a simple web application. It will consist in an interuptor that can be on or off. The dynamic value on/off, as well as all the files will be stored on the blockchain.
+Along this tutorial, we will build a simple web application. It will consist in an interuptor that can be on or off. The dynamic value on/off, as well as all the files will be stored on the blockchain. 🙉🙉🙉
 
-Please download ans install Dappy 0.2.5+ (ubuntu and windows only for now). [dappy.tech/download](https://dappy.tech/download)
+Please download ans install Dappy 0.2.7+ (ubuntu and windows only for now). [dappy.tech/download](https://dappy.tech/download)
+
+**Note :** Up to date with dappy-cli 0.3.5 and Dappy beta release 0.2.7
 
 ### Let's start
 
@@ -12,59 +14,55 @@ cd dappy-dapp-tutorial
 npm i
 ```
 
-You must first check the options in the `dappy.config.json`, add `public_key` and `private_key` (secp256k1 keys), you can ignore `registry_uri` and `unforgeable_name_id` for now. End point is by default `a1.dappy.tech`, you can also change it to connect to your local node.
+🧐 You must first check the options in the `dappy.config.json`, add `private_key` (secp256k1 keys), you can ignore `registryUri` and `manifest.fileId` for now. End points are by default `observer.testnet.rchain.coop` and `node2.testnet.rchain-dev.tk`, those are nodes of the RChain testnet. You can change those values to connect to your local node or another node, you must know a validator node and a read-only node. Check dappy-cli documentation for depper explanations.
 
 The tutorial will be divided in n steps, at each step you will be invited to increment the `jsPath` value in `dappy.config.json` (`script_1` for step 1, `script_2` for step 2 etc...).
 
-Open Dappy browser and make sure it connects to the network : settings / blockchains (`a1.dappy.tech` and `a1.dappy.tech` if you rely on the alpha network, or `localhost:xxx`).
+Open Dappy browser and make sure it connects to the network : settings / blockchains (`b1.dappy.tech` if you rely on the beta network (there might be other endpoints by now), or `localhost:xxx`) if you rely on a local network.
+
+You can find a guide to connect to or set up a network here https://fabco.gitbook.io/dappy/ .
 
 ### Step 1
 
-in this first step, we will simply push a static web application on chain. Our web application is composed of `script_1.js` `style.css` and `index.html`. The `index.html` displays "Loading..." because we don't know yet if the light is on or off.
+in this first step, we will simply push a static web application the blockchain. Our web application is composed of `script_1.js` `style.css` and `index.html`. The `index.html` displays "Dapp loaded !" because we don't know yet if the light is on or off.
 
 ```
 npm run dappy:push
-# load "unforgeable_name_id" in Dappy browser
 ```
 
-You should just see the "Dapp loaded !" text.
+You should just see the "Dapp loaded !" text 🤡.
 
 Each time you run this scripts, it bundles your application together in a html file, encodes it to base64 and also adds a signature so the client can verify the file. The file that will be sent on chain is a `.dpy` file, you can see in the logs that a `.dpy` has been created and weights ~0.8ko.
 
-If you encounter some error, make sure the Dappy browser is connected to the same network as the rnode instance running at `host` in `dappy.config.json` config file. Also check the network/resolver settings in Dappy and make sure you are connected to enough nodes.
+If you encounter some error, make sure the Dappy browser is connected to the same network as the rnode instances running at `readOnlyHost` and `validatorHost` in `dappy.config.json` config file. Also check the network/resolver settings in Dappy and make sure you are connected to enough nodes.
 
-Among the logs, you should have a `unforgeable_name_id :` log, this value is the blockchain address of the web application. You can now just paste it in the Dappy browser search bar. You should have the web application loaded in the browser, with the **DA** label telling you it is a decentralized app. You can click on the **DA** label to see from which nodes the dapp has been loaded.
+Find the line `address :` log, this value is the blockchain address of the web application. You can now just paste it in the Dappy browser search bar. You should have the web application loaded in the browser, with the **DA** label telling you it is a decentralized app. You can click on the **DA** to get network information.
 
-You just deployed your first full dapp with Dappy, congratulations !
+You just deployed your first full dapp with Dappy, congratulations ! 🥳🥳
 
 You can activate the _Development mode_ in the settings to have the chrome devtool popping up when the application loads.
 
 ### Step 2
 
-In the step 1, the logs told us that the rholang (backend) file is a default one, which does not include some storage functionality except for the file. We want to change that because our web app needs to get and set a value on the blockchain.
-
-Rename the `push.rho.example` file to `push.rho` and have a look at it. This file will override the default `push.rho` file from `dappy-cli`. The `basket` unforgeable name includes an additional key which is `unforgeable_name_light`, this is where we will store the on/off value on chain. It also exposes the `toggleLightUriCh` channel so we can change the value. So it is basically a get / set rholang contract.
-
-- `./push.rho.example` -> `./push.rho`
 - `dappy.config.json` : `script_1.js` -> `script_2.js`
 
-the first js file was all empty. Take a look at the second JS file. The key thing is that `dappy-cli` will override the `UNFORGEABLE_NAME_1` string with the unforgeable name id of the `basket` unforgeable name. Our web application retreives this `basket` with `dappyRChain.fetch`.
+The first js file was all empty. Take a look at the second JS file. Dappy cli does 2 steps deployment for web apps, it will at first deploy a files module empty, then recover the address, and the key thing is that `dappy-cli` will override the `REGISTRY_URI` string with the registry URI of the files-module that has been pushed. After that it uploads the file with `index` as file ID.
 
 ```
 npm run dappy:push
-# load "unforgeable_name_id" in Dappy browser
 ```
 
 If you have activated the _Development mode_, you should have something like the following logged in the console:
 
 ```
-lightUnforgeableName is  dac39ec15a3cf70d5bfd79eadfb948201a499338140d5b4910ef7ff812d518b1
-registryUri is  rho:id:nbi4qduztsm7bg4yo48mqgkg13xjknwmeuptxfc7smmt6dhjinyhm4
+filesRegistryUri is xxx"
+entryRegistryUri is xxx"
+currentNonceValue is xxx"
 ```
 
-Very cool ! We have all the references we need to update the value and read it.
+Very cool ! We have all the references we need to create a new entry in our file module. The `index` file ID is where our dapp is stored, we will create a `light` file where we store on or off value.
 
-`dappyRChain.fetch` is a function exposed in the global javascript context by Dappy. It allows you to request for an unforgeable name. As you see you do not have to worry about network / servers etc... The network settings defined by the user are the ones that matter and you have no power over it. At your level (web app developer) it simply succeeds or fail. For example the default settings for dappy on the alpha-network is 2 / 100%. Each time you do a `dappyRChain.fetch` call, two nodes are queried (a1.dappy.tech and a2.dappy.tech), and Dappy checks that both responses are the same before trasnmitting the result to the web application.
+`dappyRChain.fetch` is a function exposed in the global javascript context by Dappy. It allows you to request for file that is accessible according to the rholang-files-module mechanism. As you see you do not have to worry about network / servers etc... The network settings defined by the user are the ones that matter and you have no power over it. At your level (web app developer) it simply succeeds or fail. For example if the settings for dappy on the beta network are 2 / 100%. Each time you do a `dappyRChain.fetch` call, two nodes will be queried (b1.dappy.tech and b2.dappy.tech), and Dappy checks that both responses are the same before trasnmitting the result to the web application.
 
 ### Step 3
 
@@ -73,14 +71,13 @@ Very cool ! We have all the references we need to update the value and read it.
 
 Check the `script_3.js` file, we will basically deploy the same thing, but also a function `checkLight` that does a `dappyRChain.fetch` to get the on/off value, and then changes the color of the body.
 
-The `checkLight` function is called every 5 seconds. It will go through te Dappy multi-request mechanism. That value will be updated in the UI **when the user's network constraint ar satisfied**, for example if he has settings to 8 (connected to 8 nodes) / 100%. The value will be updated in your web application when all the 8 nodes agree on the unforgeable name's value.
+The `checkLight` function is called every 5 seconds. It will go through te Dappy multi-request mechanism. That value will be updated in the UI **when the user's network constraint ar satisfied**, for example if he has settings to 8 (connected to 8 nodes) / 100%. The value will be updated in your web application when all the 8 nodes agree on the "file" value, in our case the file is a simple string that can be on or off.
 
 ```
 npm run dappy:push
-# load "unforgeable_name_id" in Dappy browser
 ```
 
-So now you should have the _Light is on !_ text in the body (after waiting a bit eventually). It means that the value has been retreived on chain, and that it is **on**.
+So now you should have the _Light is off_ text in the body. It means that the file `.light` does not exist, or that it is off.
 
 ### Step 4
 
@@ -88,26 +85,32 @@ So now you should have the _Light is on !_ text in the body (after waiting a bit
 
 The `dappyRChain.fetch` function allows you to read from the blockchain, now how should we write / set some value on chain ? Dappy also exposes a `dappyRChain.transaction` function allowing you to deploy any arbitrary rholang code, and have the user requested to sign it (he can refuse or accept).
 
-So the `script_4.js` simply listens for click on the body `document.body.addEventListener('click'`, and deploys a RChain transaction to update the value on the private channel that is exposed through the `registryUri` entry point.
+So the `script_4.js` simply listens for click on the body `document.body.addEventListener('click'`, and deploys a RChain transaction to update the value on the private channel that is exposed through the `entryRegistryUri` entry point.
+
+The `"signature": "SIGN"` is important, the value SIGN will be replaced by a signature of the string `currentNonceValue` that we send to Dappy. We cannot do this in the JS because we have no right to manipulate private key, dappy will do it for us.
+
+This signature is necessary for the files module to authentify us (rholang), you could eventually deploy another versio of the files module that does not check signature, anyone could be able to switch the light 😩😩.
 
 ```
 npm run dappy:push
-# load "unforgeable_name_id" in Dappy browser
 ```
 
-Now simply click on the body, fill the inputs with correct values, and wait a bit, the body's color should change. As you see, the main constraint with Dappy's dapp is that everything must be on the blockchain, the files, and the dynamic or static values, this means that everytime you need to store something, it cannot be done without a blockchain transaction.
+Now simply click on the body, fill the inputs with correct values, and wait a bit (it can be several minutes on current testnet), the body's color should change.
+
+You can stop the tab, or reload it.
 
 ### That's it
 
-Turn off one of the two endpoints `a2.dappy.tech`, notice that the app can still load, Dappy simply skips the first one and tries to load the web application from another available endpoint.
-
-This tutorial is over. You can share the blockchain address with anyone connected to the same dappy network, since we have not coded any permission related code, anyone can change the value as well.
+This tutorial is over. You can share the blockchain address with anyone connected to the same dappy network.
 
 This architecture does not need any server or third party service to exist, it is strictly relying on the blockchain platform and the Dappy network that is referenced in Dappy browser (the Dappy network is a subset of the blockchain platform).
 
 ### Going further
 
-- You can very easily buy a name, and link it to the web application you just deployed, see settings / names section in Dappy. This will add a security layer to your infrastructure, **the file will be tested against the public key that is linked to the name each time it is loaded in Dappy**.
-- You might need to identify the user in your code (ask him to give the proof that he has a given private key), you can do it by using `dappyRChain.identify` (not documented yet).
-- Your app might need to communicate with a private server, for now **all the http/https calls are blocked by Dappy**. Go in the Settings / names / purchase name section, you will see that when purchasing a name, you are also able to reference some servers your dapp will be allowed to communicate with, this is how it happens.
-- You can deploy a web application that do not use a file stored on the blockchain, but communicates with a private server only, this is called an **IP** application, you can deploy one very easily on Dappy 0.2.5+ (not documented yet).
+Other features are available:
+
+- `dappyRChain.identify()`
+- `dappyRChain.sendPaymentRequest()`
+- Name system
+
+Read https://fabco.gitbook.io/dappy/

@@ -1,22 +1,19 @@
 {
   "manifest": {
-    "title": "Dappy tutorial",
-    "description": "",
-    "author": "Willy",
-    "cssLibraries": ["bulma@0.x"],
-    "jsLibraries": [],
-    "jsPath": "script_1.js",
+    "title": "Light switch app",
+    "jsPath": "script_2.js",
     "cssPath": "style.css",
-    "htmlPath": "index.html"
+    "htmlPath": "index.html",
+    "fileId": "index"
   },
   "options": {
     "platform": "rchain",
-    "host": "localhost",
-    "port": "40401",
-    "httpPort": "40403",
-    "private_key": "",
-    "public_key": "",
-    "registry_uri": "",
-    "unforgeable_name_id": ""
+    "readOnlyHost": "http://observer.testnet.rchain.coop",
+    "readOnlyHostHttpPort": "40403",
+    "validatorHost": "http://node2.testnet.rchain-dev.tk",
+    "validatorHostHttpPort": "40403",
+    "validatorHostgrpcProposePort": "40402",
+    "privateKey": "",
+    "registryUri": ""
   }
 }

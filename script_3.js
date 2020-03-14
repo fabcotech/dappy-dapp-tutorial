@@ -1,20 +1,27 @@
-let lightUnforgeableName = undefined;
-let registryUri = undefined;
+let filesRegistryUri = undefined;
+let entryRegistryUri = undefined;
+let currentLightValue = undefined;
+let currentNonceValue = undefined;
 
 const checkLight = () => {
   dappyRChain
-    .fetch("dappy://rchain/alphanetwork/" + lightUnforgeableName)
+    .fetch("dappy://rchain/betanetwork/" + filesRegistryUri + ".light")
     .then(a => {
-      const response = JSON.parse(a);
-      const rholangTerm = response.expr;
-      const jsValue = blockchainUtils.rhoValToJs(rholangTerm);
-      console.log("lightUnforgeableName : ", jsValue);
-      if (jsValue === "on") {
-        document.body.setAttribute("style", "background: #FAFAFA;color:#000;");
-        document.body.innerText = "Light is on !\n\nclick to switch";
-      } else {
+      const rholangTerm = JSON.parse(a).expr[0];
+      if (!rholangTerm) {
         document.body.setAttribute("style", "background: #222;color:#FFF;");
-        document.body.innerText = "Light is off !\n\nclick to switch";
+        document.body.innerText = "Light is off\\n\\nclick to switch";
+        return;
+      }
+      const jsValue = blockchainUtils.rhoValToJs(rholangTerm);
+      if (jsValue === "on") {
+        currentLightValue = "on";
+        document.body.setAttribute("style", "background: #FAFAFA;color:#000;");
+        document.body.innerText = "Light is on\\n\\nclick to switch";
+      } else {
+        currentLightValue = "off";
+        document.body.setAttribute("style", "background: #222;color:#FFF;");
+        document.body.innerText = "Light is off\\n\\nclick to switch";
       }
     })
     .catch(err => {
@@ -22,15 +29,17 @@ const checkLight = () => {
     });
 };
 
-const loadUnforgeableName = () => {
+const loadFilesModule = () => {
   dappyRChain
-    .fetch("dappy://rchain/alphanetwork/UNFORGEABLE_NAME_1")
+    .fetch("dappy://rchain/betanetwork/REGISTRY_URI")
     .then(a => {
-      const response = JSON.parse(a);
-      const rholangTerm = response.expr;
+      console.log(a);
+      const rholangTerm = JSON.parse(a).expr[0];
       const jsObject = blockchainUtils.rhoValToJs(rholangTerm);
-      registryUri = jsObject.registry_uri;
-      lightUnforgeableName = jsObject.unforgeable_name_light.UnforgPrivate;
+      console.log(jsObject);
+      filesRegistryUri = jsObject.filesRegistryUri.replace("rho:id:", "");
+      entryRegistryUri = jsObject.entryRegistryUri.replace("rho:id:", "");
+      currentNonceValue = jsObject.nonce;
       checkLight();
       setInterval(() => {
         checkLight();
@@ -40,4 +49,4 @@ const loadUnforgeableName = () => {
       console.log(err);
     });
 };
-loadUnforgeableName();
+loadFilesModule();

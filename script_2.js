@@ -1,18 +1,20 @@
-const loadUnforgeableName = () => {
+const loadFilesModule = () => {
   dappyRChain
-    .fetch("dappy://rchain/alphanetwork/UNFORGEABLE_NAME_1")
+    .fetch("dappy://rchain/betanetwork/REGISTRY_URI")
     .then(a => {
-      const response = JSON.parse(a);
-      const rholangTerm = response.expr;
+      console.log(a);
+      const rholangTerm = JSON.parse(a).expr[0];
       const jsObject = blockchainUtils.rhoValToJs(rholangTerm);
-      registryUri = jsObject.registry_uri;
-      lightUnforgeableName = jsObject.unforgeable_name_light.UnforgPrivate;
-      console.log("lightUnforgeableName is ", lightUnforgeableName);
-      console.log("registryUri is ", registryUri);
+      console.log(jsObject);
+      filesRegistryUri = jsObject.filesRegistryUri.replace("rho:id:", "");
+      entryRegistryUri = jsObject.entryRegistryUri.replace("rho:id:", "");
+      currentNonceValue = jsObject.nonce;
+      console.log("filesRegistryUri is", filesRegistryUri);
+      console.log("entryRegistryUri is", entryRegistryUri);
+      console.log("currentNonceValue is", currentNonceValue);
     })
     .catch(err => {
       console.log(err);
     });
 };
-
-loadUnforgeableName();
+loadFilesModule();
