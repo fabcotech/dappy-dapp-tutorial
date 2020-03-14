@@ -16,7 +16,7 @@ cd dappy-dapp-tutorial
 npm i
 ```
 
-🧐 You must first check the options in the `dappy.config.json`, add `private_key` (secp256k1 keys), you can ignore `registryUri` and `manifest.fileId` for now. End points are by default `observer.testnet.rchain.coop` and `node2.testnet.rchain-dev.tk`, those are nodes of the RChain testnet. You can change those values to connect to your local node or another node, you must know a validator node and a read-only node. Check dappy-cli documentation for depper explanations.
+🧐 You must first check the options in the `dappy.config.json`, add `privateKey` (secp256k1 keys), you can ignore `registryUri` and `manifest.fileId` for now. End points are by default `observer.testnet.rchain.coop` and `node2.testnet.rchain-dev.tk`, those are nodes of the RChain testnet. You can change those values to connect to your local node or another node, you must know a validator node and a read-only node. Check dappy-cli documentation for depper explanations.
 
 The tutorial will be divided in n steps, at each step you will be invited to increment the `jsPath` value in `dappy.config.json` (`script_1` for step 1, `script_2` for step 2 etc...).
 
