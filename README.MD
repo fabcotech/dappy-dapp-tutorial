@@ -1,4 +1,6 @@
-This repo is a tutorial to help you build cool decentralized web applications with Dappy 🐸🐸🐸.
+This repo is a tutorial to help you build cool decentralized web applications with Dappy 🐸.
+
+![Woods](https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=460)
 
 Along this tutorial, we will build a simple web application. It will consist in an interuptor that can be on or off. The dynamic value on/off, as well as all the files will be stored on the blockchain. 🙉🙉🙉
 
