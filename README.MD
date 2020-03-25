@@ -1,5 +1,3 @@
-**Not up to date for Dappy 0.2.8, will be updated soon**
-
 This repo is a tutorial to help you build cool decentralized web applications with Dappy 🐸.
 
 ![Woods](https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200&w=460)
@@ -8,9 +6,9 @@ Along this tutorial, we will build a simple web application. It will consist in 
 
 Dappy deals with two kind of content, IP applications and dapps, we are going to build a dapp, read more about dapps [here](https://fabco.gitbook.io/dappy/dapps).
 
-Please download ans install Dappy 0.2.7+ . [dappy.tech/download](https://dappy.tech/download)
+Please download ans install Dappy 0.2.8+ . [dappy.tech/download](https://dappy.tech/download)
 
-**Note :** Up to date with dappy-cli 0.3.5 and Dappy beta release 0.2.7
+**Note :** Up to date with dappy-cli 0.3.7 and Dappy beta release 0.2.8
 
 ### Let's start
 
@@ -24,10 +22,9 @@ npm i
 
 The tutorial will be divided in n steps, at each step you will be invited to increment the `jsPath` value in `dappy.config.json` (`script_1` for step 1, `script_2` for step 2 etc...).
 
-TODO
-Open Dappy browser and make sure it connects to the network : settings / blockchains (`b1.dappy.tech` if you rely on the beta network (there might be other endpoints by now), or `localhost:xxx`) if you rely on a local network.
+The default values in `dappy.config.json` are for RChain testnet.
 
-You can find a guide to connect to or set up a network here https://fabco.gitbook.io/dappy/ .
+Please configure Dappy browser to connect to the right network. See [general documentation](https://fabco.gitbook.io/dappy/dappy-browser).
 
 ### Step 1
 
@@ -62,7 +59,9 @@ Dappy CLI `dappy:push` uses the [files module](https://github.com/fabcotech/rhol
 The uploads goes into 2 steps :
 
 - Step 1, a files module with no file in it is deployed, and the registry URIs are recovered. See [rholang files module](https://github.com/fabcotech/rholang-files-module#files-module) to understand what is being deployed and recovered.
-- Step 2, if `REGISTRY_URI` is found in the js, css or html files, it is replaced with proper value from step 1. Then the file is compiled into a .dpy, and uploaded with `manifest.fileId` as file ID. EXPLIQUER
+- Step 2, if `REGISTRY_URI` is found in the js, css or html files, it is replaced with proper value from step 1. Then the file is compiled into a .dpy, and uploaded to the blockchain.
+
+The `REGISTRY_URI` is the address of the files module, then there are unique file ID for each file stored in this files module. If you did not touch `manifest.fileId` in `dappy.config.json`, the value is "index".
 
 ```
 npm run dappy:push
@@ -71,20 +70,23 @@ npm run dappy:push
 If you have activated the _Development mode_, you should have something like the following logged in the console of the dappy app:
 
 ```
-filesRegistryUri is xxx"
-entryRegistryUri is xxx"
+registryUri is xxx"
 currentNonceValue is xxx"
 ```
 
-The first js file was all empty. Take a look at the file `script_2.js`, it contains the `REGISTRY_URI` expression that will be replaced by dappy CLI. `dappyRChain.fetch("dappy://rchain/betanetwork/aaa")` when executed will get the description of the files module, that contains the files module registry URI itself ("aaa"), the entry registry URI, the value of the nonce, and the list of files. We will use those values in further steps.
+The first js file was all empty. Take a look at the file `script_2.js`, it contains the `REGISTRY_URI` expression that will be replaced by dappy CLI. `dappyRChain.fetch("dappy://rchain/betanetwork/aaa")` when executed will get the description of the files module, that contains multiple keys:
 
-**Note** : The files registry URI in the description of the files module will be called simply registry URI, it must not be mismatched with the entry registry URI.
+- `.registryUri`: the files module registry URI itself
+- `.nonce`: the value of the nonce
+- `.files`: the list of files.
 
-**Note** : `dappyRChain.fetch("dappy://rchain/betanetwork/REGISTRY_URI")` is not the same as `dappyRChain.fetch("dappy://rchain/betanetwork/REGSTRY_URI.FILE_ID")`, the first one gets the variables and URIs of the files module, the second one gets the `index` file for this files module.
+We will use those values in further steps.
+
+**Note** : `dappyRChain.fetch("dappy://rchain/betanetwork/REGISTRY_URI")` is not the same as `dappyRChain.fetch("dappy://rchain/betanetwork/REGSTRY_URI.FILE_ID")`, the first one gets the description of the files module, the second one gets the `index` file for this files module.
 
 The `index` file ID is where our dapp is stored, we will create a `light` file where we store on/off value.
 
-When doing `dappyRChain.fetch`, the network settings defined by the user are the ones that matter and you have no power over it. At your level (web app developer) it simply succeeds or fail. For example if the settings for dappy on the beta network are 2 / 100%. Each time you do a `dappyRChain.fetch` call, two nodes will be queried (b1.dappy.tech and b2.dappy.tech), and Dappy checks that both responses are the same before trasnmitting the result to the web application.
+**Multi-requests**: When doing `dappyRChain.fetch`, the network settings defined by the user are the ones that matter and you have no power over it. At your level (web app developer) it simply succeeds or fail. For example if the settings for dappy on the beta network are 2 / 100%. Each time you do a `dappyRChain.fetch` call, two nodes will be queried (b1.dappy.tech and b2.dappy.tech), and Dappy checks that both responses are the same before trasnmitting the result to the web application.
 
 ### Step 3
 
@@ -93,7 +95,7 @@ When doing `dappyRChain.fetch`, the network settings defined by the user are the
 
 Check the `script_3.js` file, we will basically deploy the same thing, but also a function `checkLight` that does a `dappyRChain.fetch` to get the on/off value, and then changes the color of the body.
 
-The `checkLight` function is called every 5 seconds. It will go through te Dappy multi-request mechanism. That value will be updated in the UI **when the user's network constraint ar satisfied**, for example if he has settings to 8 (connected to 8 nodes) / 100%. The value will be updated in your web application when all the 8 nodes agree on the "file" value, in our case the file is a simple string that can be on or off.
+The `checkLight` function is called every 5 seconds. It will go through te Dappy multi-request mechanism. That value will be updated in the UI **when the user's network constraint are satisfied**, for example if he has settings to 8 (connected to 8 nodes) / 100%. The value will be updated in your web application when all the 8 nodes agree on the "file" value, in our case the file is a simple string that can be on or off.
 
 ```
 npm run dappy:push
@@ -107,11 +109,11 @@ So now you should have the _Light is off_ text in the body. It means that the fi
 
 The `dappyRChain.fetch` function allows you to read from the blockchain, now how should we write / set some value on chain ? Dappy also exposes a `dappyRChain.transaction` function allowing you to deploy any arbitrary rholang code, and have the user requested to sign it (he can refuse or accept).
 
-So the `script_4.js` simply listens for click on the body `document.body.addEventListener('click'`, and deploys a RChain transaction to update the value on the private channel that is exposed through the `entryRegistryUri` entry point.
+So the `script_4.js` simply listens for click on the body `document.body.addEventListener('click'`, and deploys a RChain transaction to update the value on the private channel that is exposed through the `registryUri` registry (see rholang documentation if you want to know how the registry, and channel references work).
 
-The `"signature": "SIGN"` is important, the value SIGN will be replaced by a signature of the string `currentNonceValue` that we send to Dappy. We cannot do this in the JS because we have no right to manipulate private key, dappy will do it for us.
+The `"signature": "SIGN"` is important, the value SIGN will be replaced by a signature of the string `currentNonceValue` that we send to Dappy browser. We cannot do this in the JS because we have no right to manipulate private key, dappy will do it for us.
 
-This signature is necessary for the files module to authentify us (rholang), you could eventually deploy another versio of the files module that does not check signature, anyone could be able to switch the light 😩😩.
+This signature is necessary for the files module to authentify us (rholang), you could eventually deploy another version of the files module that does not check signature, anyone could be able to switch the light 😩😩.
 
 ```
 npm run dappy:push

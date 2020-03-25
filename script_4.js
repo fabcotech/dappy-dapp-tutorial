@@ -1,5 +1,4 @@
-let filesRegistryUri = undefined;
-let entryRegistryUri = undefined;
+let registryUri = undefined;
 let currentLightValue = undefined;
 let currentNonceValue = undefined;
 
@@ -8,7 +7,7 @@ document.body.addEventListener("click", () => {
   dappyRChain
     .transaction({
       term: `new basket, entryCh, lookup(\`rho:registry:lookup\`), stdout(\`rho:io:stdout\`) in {
-            lookup!(\`rho:id:${entryRegistryUri}\`, *entryCh) |
+            lookup!(\`rho:id:${registryUri}\`, *entryCh) |
             for(entry <- entryCh) {
               entry!(
               {
@@ -34,7 +33,7 @@ document.body.addEventListener("click", () => {
 
 const checkLight = () => {
   dappyRChain
-    .fetch("dappy://rchain/betanetwork/" + filesRegistryUri + ".light")
+    .fetch("dappy://rchain/betanetwork/" + registryUri + ".light")
     .then(a => {
       const rholangTerm = JSON.parse(a).expr[0];
       if (!rholangTerm) {
@@ -66,13 +65,10 @@ const loadFilesModule = () => {
       const rholangTerm = JSON.parse(a).expr[0];
       const jsObject = blockchainUtils.rhoValToJs(rholangTerm);
       console.log(jsObject);
-      filesRegistryUri = jsObject.filesRegistryUri.replace("rho:id:", "");
-      entryRegistryUri = jsObject.entryRegistryUri.replace("rho:id:", "");
+      registryUri = jsObject.registryUri.replace("rho:id:", "");
       currentNonceValue = jsObject.nonce;
-      checkLight();
-      setInterval(() => {
-        checkLight();
-      }, 5000);
+      console.log("registryUri is", registryUri);
+      console.log("currentNonceValue is", currentNonceValue);
     })
     .catch(err => {
       console.log(err);

@@ -1,3 +1,7 @@
+let registryUri = undefined;
+let currentLightValue = undefined;
+let currentNonceValue = undefined;
+
 const loadFilesModule = () => {
   dappyRChain
     .fetch("dappy://rchain/betanetwork/REGISTRY_URI")
@@ -6,11 +10,9 @@ const loadFilesModule = () => {
       const rholangTerm = JSON.parse(a).expr[0];
       const jsObject = blockchainUtils.rhoValToJs(rholangTerm);
       console.log(jsObject);
-      filesRegistryUri = jsObject.filesRegistryUri.replace("rho:id:", "");
-      entryRegistryUri = jsObject.entryRegistryUri.replace("rho:id:", "");
+      registryUri = jsObject.registryUri.replace("rho:id:", "");
       currentNonceValue = jsObject.nonce;
-      console.log("filesRegistryUri is", filesRegistryUri);
-      console.log("entryRegistryUri is", entryRegistryUri);
+      console.log("registryUri is", registryUri);
       console.log("currentNonceValue is", currentNonceValue);
     })
     .catch(err => {
