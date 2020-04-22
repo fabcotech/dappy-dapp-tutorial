@@ -54,12 +54,12 @@ Dappy CLI command `dappy:push` uses the [files module](https://github.com/fabcot
 
 The uploads (`dappy:push`) goes into 2 steps :
 
-- Step 1, a files module with no file in it is deployed, and the registry URIs are recovered. See [rholang files module](https://github.com/fabcotech/rholang-files-module#files-module) to understand what is being deployed and recovered.
-- Step 2, if `REGISTRY_URI` is found in the js, css or html files, it is replaced with proper value from step 1. Then the file is compiled into a .dpy, and uploaded to the blockchain.
+- Step A, a files module with no file in it is deployed, and the registry URIs are recovered. See [rholang files module](https://github.com/fabcotech/rholang-files-module#files-module) to understand what is being deployed and recovered.
+- Step B, if `REGISTRY_URI` is found in the js, css or html files, it is replaced with proper value from step 1. Then the file is compiled into a .dpy, and uploaded to the blockchain.
 
 The `registryUri` is the address of the files module, then there are unique file ID for each file stored in this files module. If you did not touch `manifest.fileId` in `dappy.config.json`, the value is "index".
 
-In order to avoid repushing each time, you can simply update the file at each stem, get the registry URI from the logs, and put it in the proper place in `dappy.config.json`. Then just run `npm run dappy:update` instead of `npm run dappy:push`.
+In order to avoid re-deploying an entire files module each time (step A), you can simply update the file at each step. Get the registry URI from the logs, and put it in the proper place in `dappy.config.json`. Then just run `npm run dappy:update` instead of `npm run dappy:push`.
 
 ### Step 2
 
