@@ -28,19 +28,17 @@ Please configure Dappy browser to connect to the right network. See [general doc
 
 ### Step 1
 
-in this first step, we will simply push a static web application the blockchain. Our web application is composed of `script_1.js` `style.css` and `index.html`. The `index.html` displays "Dapp loaded !" because we don't know yet if the interruptor is on or off.
+In this first step, we will simply push a static web application the blockchain. Our web application is composed of `script_1.js` `style.css` and `index.html`. The `index.html` displays "Dapp loaded !" because we don't know yet if the interruptor is on or off.
 
 ```
 npm run dappy:push
 ```
 
-You should just see the "Dapp loaded !" text 👌.
-
-Each time you run this scripts, it bundles your application together in a html file, encodes it to base64 and also adds a signature so the client can verify the file. The file that will be sent on chain is a `.dpy` file, you can see in the logs that a `.dpy` has been created and weights ~0.8ko.
-
 If you encounter some error when pushing, make sure the rnode instances at `readOnlyHost` and `validatorHost` in `dappy.config.json` are running (`:40403/status` path tells you about the status of the rnode). Also check that your private key has enough funds, and that phlo limit is not superior to that.
 
 Find the line `address :` log, this value is the blockchain address of the web application. You can now just paste it in the Dappy browser search bar and hit enter. You should have the web application loaded in the browser, with the **DA** label telling you it is a decentralized app (dapp). You can click on the **DA** to get network information.
+
+You should just see the "Dapp loaded !" text 👌.
 
 If you encounter some error when loading in dappy browser, also check the network/resolver settings in Dappy and make sure you are connected to enough nodes. If you have only one endpoint, set the resolver settings to 1 / 100%.
 
@@ -50,21 +48,27 @@ You just deployed your first full dapp with Dappy, congratulations ! 🥳🥳
 
 You can activate the _Development mode_ in the settings to have the chrome devtool popping up when the application loads.
 
-### Step 2
+#### About Dappy CLI and the files module
 
-- `dappy.config.json` : `script_1.js` -> `script_2.js`
+Dappy CLI command `dappy:push` uses the [files module](https://github.com/fabcotech/rholang-files-module) for handling files on the blockchain.
 
-Dappy CLI `dappy:push` uses the [files module](https://github.com/fabcotech/rholang-files-module) for handling files on the blockchain.
-
-The uploads goes into 2 steps :
+The uploads (`dappy:push`) goes into 2 steps :
 
 - Step 1, a files module with no file in it is deployed, and the registry URIs are recovered. See [rholang files module](https://github.com/fabcotech/rholang-files-module#files-module) to understand what is being deployed and recovered.
 - Step 2, if `REGISTRY_URI` is found in the js, css or html files, it is replaced with proper value from step 1. Then the file is compiled into a .dpy, and uploaded to the blockchain.
 
-The `REGISTRY_URI` is the address of the files module, then there are unique file ID for each file stored in this files module. If you did not touch `manifest.fileId` in `dappy.config.json`, the value is "index".
+The `registryUri` is the address of the files module, then there are unique file ID for each file stored in this files module. If you did not touch `manifest.fileId` in `dappy.config.json`, the value is "index".
+
+In order to avoid repushing each time, you can simply update the file at each stem, get the registry URI from the logs, and put it in the proper place in `dappy.config.json`. Then just run `npm run dappy:update` instead of `npm run dappy:push`.
+
+### Step 2
+
+- `dappy.config.json` : `script_1.js` -> `script_2.js`
 
 ```
 npm run dappy:push
+# or
+npm run dappy:update
 ```
 
 If you have activated the _Development mode_, you should have something like the following logged in the console of the dappy app:
@@ -84,9 +88,11 @@ We will use those values in further steps.
 
 **Note** : `dappyRChain.fetch("dappy://rchain/betanetwork/REGISTRY_URI")` is not the same as `dappyRChain.fetch("dappy://rchain/betanetwork/REGSTRY_URI.FILE_ID")`, the first one gets the description of the files module, the second one gets the `index` file for this files module.
 
-The `index` file ID is where our dapp is stored, we will create a `light` file where we store on/off value.
+The `index` file ID is where our dapp is stored, we will create a file with file ID "light", where we will store the on/off value.
 
-**Multi-requests**: When doing `dappyRChain.fetch`, the network settings defined by the user are the ones that matter and you have no power over it. At your level (web app developer) it simply succeeds or fail. For example if the settings for dappy on the beta network are 2 / 100%. Each time you do a `dappyRChain.fetch` call, two nodes will be queried (b1.dappy.tech and b2.dappy.tech), and Dappy checks that both responses are the same before trasnmitting the result to the web application.
+#### About multi-requests
+
+When doing `dappyRChain.fetch`, the network settings defined by the user are the ones that matter and you have no power over it. At your level (web app developer) it simply succeeds or fail. For example if the settings for dappy on the beta network are 2 / 100%. Each time you do a `dappyRChain.fetch` call, two nodes will be queried (b1.dappy.tech and b2.dappy.tech), and Dappy checks that both responses are the same before trasnmitting the result to the web application.
 
 ### Step 3
 
@@ -95,13 +101,15 @@ The `index` file ID is where our dapp is stored, we will create a `light` file w
 
 Check the `script_3.js` file, we will basically deploy the same thing, but also a function `checkLight` that does a `dappyRChain.fetch` to get the on/off value, and then changes the color of the body.
 
-The `checkLight` function is called every 5 seconds. It will go through te Dappy multi-request mechanism. That value will be updated in the UI **when the user's network constraint are satisfied**, for example if he has settings to 8 (connected to 8 nodes) / 100%. The value will be updated in your web application when all the 8 nodes agree on the "file" value, in our case the file is a simple string that can be on or off.
+The `checkLight` function is called every 5 seconds. It will go through te Dappy multi-request mechanism. That value will be updated in the UI **when the user's network constraint are satisfied**, for example if he has settings to 8 (connected to 8 nodes) / 100%. The value will be updated in your web application when all the 8 nodes agree on the value of the file with ID "light", in our case the file is a simple string that can be on or off.
 
 ```
 npm run dappy:push
+# or
+npm run dappy:update
 ```
 
-So now you should have the _Light is off_ text in the body. It means that the file `.light` does not exist, or that it is off.
+So now you should have the _Light is off_ text in the body. It means that the file "light" does not exist in our files module, or that it is off.
 
 ### Step 4
 
@@ -117,6 +125,8 @@ This signature is necessary for the files module to authentify us (rholang), you
 
 ```
 npm run dappy:push
+# or
+npm run dappy:update
 ```
 
 Now simply click on the body, fill the inputs with correct values, and wait a bit (it can be several minutes on current testnet), the body's color should change.

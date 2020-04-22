@@ -23,10 +23,10 @@ document.body.addEventListener("click", () => {
             basket!({ "status": "completed" })
           }`,
       signatures: {
-        SIGN: currentNonceValue
-      }
+        SIGN: currentNonceValue,
+      },
     })
-    .then(a => {
+    .then((a) => {
       currentNonceValue = newNonce;
     });
 });
@@ -34,25 +34,25 @@ document.body.addEventListener("click", () => {
 const checkLight = () => {
   dappyRChain
     .fetch("dappy://rchain/betanetwork/" + registryUri + ".light")
-    .then(a => {
+    .then((a) => {
       const rholangTerm = JSON.parse(a).expr[0];
       if (!rholangTerm) {
         document.body.setAttribute("style", "background: #222;color:#FFF;");
-        document.body.innerText = "Light is off\\n\\nclick to switch";
+        document.body.innerText = "Light is off\n\nclick to switch";
         return;
       }
       const jsValue = blockchainUtils.rhoValToJs(rholangTerm);
       if (jsValue === "on") {
         currentLightValue = "on";
         document.body.setAttribute("style", "background: #FAFAFA;color:#000;");
-        document.body.innerText = "Light is on\\n\\nclick to switch";
+        document.body.innerText = "Light is on\n\nclick to switch";
       } else {
         currentLightValue = "off";
         document.body.setAttribute("style", "background: #222;color:#FFF;");
-        document.body.innerText = "Light is off\\n\\nclick to switch";
+        document.body.innerText = "Light is off\n\nclick to switch";
       }
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
     });
 };
@@ -60,7 +60,7 @@ const checkLight = () => {
 const loadFilesModule = () => {
   dappyRChain
     .fetch("dappy://rchain/betanetwork/REGISTRY_URI")
-    .then(a => {
+    .then((a) => {
       console.log(a);
       const rholangTerm = JSON.parse(a).expr[0];
       const jsObject = blockchainUtils.rhoValToJs(rholangTerm);
@@ -69,8 +69,10 @@ const loadFilesModule = () => {
       currentNonceValue = jsObject.nonce;
       console.log("registryUri is", registryUri);
       console.log("currentNonceValue is", currentNonceValue);
+      checkLight();
+      setInterval(checkLight, 5000);
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
     });
 };
