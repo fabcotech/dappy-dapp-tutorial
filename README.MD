@@ -28,7 +28,7 @@ Please configure Dappy browser to connect to the right network. See [general doc
 
 ### Step 1
 
-In this first step, we will simply push a static web application the blockchain. Our web application is composed of `script_1.js` `style.css` and `index.html`. The `index.html` displays "Dapp loaded !" because we don't know yet if the interruptor is on or off.
+In this first step, we will simply push a static web application the blockchain. Our web application is composed of `script_1.js` `style.css` and `index_1.html`. The `index_1.html` displays "Dapp loaded !" because we don't know yet if the interruptor is on or off.
 
 ```
 npm run dappy:push
@@ -78,7 +78,7 @@ registryUri is xxx"
 currentNonceValue is xxx"
 ```
 
-The first js file was all empty. Take a look at the file `script_2.js`, it contains the `REGISTRY_URI` expression that will be replaced by dappy CLI. `dappyRChain.fetch("dappy://rchain/betanetwork/aaa")` when executed will get the description of the files module, that contains multiple keys:
+The first js file was all empty. Take a look at the file `script_2.js`, it contains the `REGISTRY_URI` expression that will be replaced by dappy CLI. `dappyRChain.fetch("dappy://betanetwork/aaa")` when executed will get the description of the files module, that contains multiple keys:
 
 - `.registryUri`: the files module registry URI itself
 - `.nonce`: the value of the nonce
@@ -86,7 +86,7 @@ The first js file was all empty. Take a look at the file `script_2.js`, it conta
 
 We will use those values in further steps.
 
-**Note** : `dappyRChain.fetch("dappy://rchain/betanetwork/REGISTRY_URI")` is not the same as `dappyRChain.fetch("dappy://rchain/betanetwork/REGSTRY_URI.FILE_ID")`, the first one gets the description of the files module, the second one gets the `index` file for this files module.
+**Note** : `dappyRChain.fetch("dappy://betanetwork/REGISTRY_URI")` is not the same as `dappyRChain.fetch("dappy://betanetwork/REGSTRY_URI.FILE_ID")`, the first one gets the description of the files module, the second one gets the `index` file for this files module.
 
 The `index` file ID is where our dapp is stored, we will create a file with file ID "light", where we will store the on/off value.
 
@@ -97,7 +97,7 @@ When doing `dappyRChain.fetch`, the network settings defined by the user are the
 ### Step 3
 
 - `dappy.config.json` : `script_2.js` -> `script_3.js`
-- `dappy.config.json` : `index.html` -> `index_2.html`
+- `dappy.config.json` : `index_1.html` -> `index_2.html`
 
 Check the `script_3.js` file, we will basically deploy the same thing, but also a function `checkLight` that does a `dappyRChain.fetch` to get the on/off value, and then changes the color of the body.
 
@@ -117,9 +117,9 @@ So now you should have the _Light is off_ text in the body. It means that the fi
 
 The `dappyRChain.fetch` function allows you to read from the blockchain, now how should we write / set some value on chain ? Dappy also exposes a `dappyRChain.transaction` function allowing you to deploy any arbitrary rholang code, and have the user requested to sign it (he can refuse or accept).
 
-So the `script_4.js` simply listens for click on the body `document.body.addEventListener('click'`, and deploys a RChain transaction to update the value on the private channel that is exposed through the `registryUri` registry (see rholang documentation if you want to know how the registry, and channel references work).
+The `script_4.js` listens for click events on the body `document.body.addEventListener('click'`, and deploys a RChain transaction to update the value on the private channel that is exposed through the `registryUri` registry (see rholang documentation if you want to know how the registry, and channel references work).
 
-The `"signature": "SIGN"` is important, the value SIGN will be replaced by a signature of the string `currentNonceValue` that we send to Dappy browser. We cannot do this in the JS because we have no right to manipulate private key, dappy will do it for us.
+The `"signature": "SIGN"` (script_4.js) is important, the value SIGN will be replaced by a signature of the string `currentNonceValue` that we send to Dappy browser. We cannot do this in the JS because we have no right to manipulate private key, dappy will do it for us.
 
 This signature is necessary for the files module to authentify us (rholang), you could eventually deploy another version of the files module that does not check signature, anyone could be able to switch the light 😩😩.
 
