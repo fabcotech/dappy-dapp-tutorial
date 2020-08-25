@@ -5,7 +5,7 @@ let currentNonceValue = undefined;
 if (typeof dappyRChain !== "undefined") {
   const checkLight = () => {
     dappyRChain
-      .fetch("dappy://betanetwork/" + registryUri + ".light")
+      .fetch("dappy://" + registryUri + ".light")
       .then((a) => {
         const rholangTerm = JSON.parse(a).expr[0];
         if (!rholangTerm) {
@@ -34,7 +34,7 @@ if (typeof dappyRChain !== "undefined") {
 
   const loadFilesModule = () => {
     dappyRChain
-      .fetch("dappy://betanetwork/REGISTRY_URI")
+      .fetch("dappy://REGISTRY_URI")
       .then((a) => {
         console.log(a);
         const rholangTerm = JSON.parse(a).expr[0];

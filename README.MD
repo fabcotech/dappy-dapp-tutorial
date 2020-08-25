@@ -6,9 +6,9 @@ Along this tutorial, we will build a simple web application. It will consist in 
 
 Dappy deals with two kind of content, IP applications and dapps, we are going to build a dapp, read more about dapps [here](https://fabco.gitbook.io/dappy/dapps).
 
-Please download ans install Dappy 0.2.8+ . [dappy.tech/download](https://dappy.tech/download)
+Please download ans install Dappy 0.3.3+ . [dappy.tech/download](https://dappy.tech/download)
 
-**Note :** Up to date with dappy-cli 0.3.7 and Dappy beta release 0.2.8
+**Note :** Up to date with dappy-cli 0.4.2 and Dappy beta release 0.3.3
 
 ### Let's start
 
@@ -20,11 +20,11 @@ npm i
 
 🧐 You must first check the options in the `dappy.config.json`, add `privateKey` (secp256k1 keys), you can ignore `registryUri` and `manifest.fileId` for now. Leave the hosts and ports by default, `observer.testnet.rchain.coop` and `node2.testnet.rchain-dev.tk` are nodes of the RChain testnet. You can change those values to connect to your local node or another node, you must know a validator node and a read-only node. Check [dappy-cli](https://github.com/fabcotech/dappy-cli) documentation for deeper explanations
 
-The tutorial will be divided in n steps, at each step you will be invited to increment the `jsPath` value in `dappy.config.json` (`script_1` for step 1, `script_2` for step 2 etc...).
+The tutorial will be divided in n steps, at each step please increment the `jsPath` value in `dappy.config.json` (`script_1` for step 1, `script_2` for step 2 etc...).
 
-The default values in `dappy.config.json` are for RChain testnet.
+The default values in `dappy.config.json` are for the dappy delta network, connected to the RChain testnet.
 
-Please configure Dappy browser to connect to the right network. See [general documentation](https://fabco.gitbook.io/dappy/dappy-browser).
+Please configure Dappy browser to connect to the right network (delta network (testnet) by default). See [general documentation](https://fabco.gitbook.io/dappy/dappy-browser).
 
 ### Step 1
 
@@ -34,7 +34,7 @@ In this first step, we will simply push a static web application the blockchain.
 npm run dappy:push
 ```
 
-If you encounter some error when pushing, make sure the rnode instances at `readOnlyHost` and `validatorHost` in `dappy.config.json` are running (`:40403/status` path tells you about the status of the rnode). Also check that your private key has enough funds, and that phlo limit is not superior to that.
+If you encounter some error when pushing, make sure the rnode instances at `readOnlyHost` and `validatorHost` in `dappy.config.json` are running (`node2.testnet.rchain-dev.tk/status` path tells you about the status of the rnode). Also check that your private key has enough funds, and that phlo limit is not superior to that.
 
 Find the line `address :` log, this value is the blockchain address of the web application. You can now just paste it in the Dappy browser search bar and hit enter. You should have the web application loaded in the browser, with the **DA** label telling you it is a decentralized app (dapp). You can click on the **DA** to get network information.
 
@@ -55,9 +55,9 @@ Dappy CLI command `dappy:push` uses the [files module](https://github.com/fabcot
 The uploads (`dappy:push`) goes into 2 steps :
 
 - Step A, a files module with no file in it is deployed, and the registry URIs are recovered. See [rholang files module](https://github.com/fabcotech/rholang-files-module#files-module) to understand what is being deployed and recovered.
-- Step B, if `REGISTRY_URI` is found in the js, css or html files, it is replaced with proper value from step 1. Then the file is compiled into a .dpy, and uploaded to the blockchain.
+- Step B, if `REGISTRY_URI` is found in the javascript, css or html files, it is replaced with proper value from step 1. Then the file is compiled into a .dpy, and uploaded to the blockchain.
 
-The `registryUri` is the address of the files module, then there are unique file ID for each file stored in this files module. If you did not touch `manifest.fileId` in `dappy.config.json`, the value is "index".
+The `registryUri` is the address of the files module, there is a unique file ID for each file stored in this files module. If you did not touch `manifest.fileId` in `dappy.config.json`, the value is "index".
 
 In order to avoid re-deploying an entire files module each time (step A), you can simply update the file at each step. Get the registry URI from the logs, and put it in the proper place in `dappy.config.json`. Then just run `npm run dappy:update` instead of `npm run dappy:push`.
 
@@ -78,17 +78,19 @@ registryUri is xxx"
 currentNonceValue is xxx"
 ```
 
-The first js file was all empty. Take a look at the file `script_2.js`, it contains the `REGISTRY_URI` expression that will be replaced by dappy CLI. `dappyRChain.fetch("dappy://betanetwork/aaa")` when executed will get the description of the files module, that contains multiple keys:
+The first javascript file is empty. Take a look at the file `script_2.js`, it contains a `REGISTRY_URI` expression, dappy CLI will replace this by the actual registry URI. `dappyRChain.fetch("dappy://REGISTRY_URI")` when executed will get the description of the files module, this description contains the following keys:
 
 - `.registryUri`: the files module registry URI itself
-- `.nonce`: the value of the nonce
+- `.nonce`: the value of the nonce that changes everytime an aciton is performed
 - `.files`: the list of files.
 
 We will use those values in further steps.
 
-**Note** : `dappyRChain.fetch("dappy://betanetwork/REGISTRY_URI")` is not the same as `dappyRChain.fetch("dappy://betanetwork/REGSTRY_URI.FILE_ID")`, the first one gets the description of the files module, the second one gets the `index` file for this files module.
+**Note** : `dappyRChain.fetch("dappy://REGISTRY_URI")` is not the same as `dappyRChain.fetch("dappy://REGSTRY_URI.FILE_ID")`, the first one gets the description of the files module, the second one gets the `index` file for this files module.
 
-The `index` file ID is where our dapp is stored, we will create a file with file ID "light", where we will store the on/off value.
+**Note 2** : If you alreadu know the ID of the dappy network you will work with, you can write complete dappy address instead of shortcut addresses. `dappyRChain.fetch("dappy://REGISTRY_URI")` -> `dappyRChain.fetch("dappy://deltanetwork/REGISTRY_URI")`. Keeping the shortcut notation is simpler though, because you don't need to think about which network you are working with, the browser will resolve it automatically.
+
+The `index` file ID is where our dapp is stored, we will create a file with file ID "light", this file will contain the on/off value.
 
 #### About multi-requests
 

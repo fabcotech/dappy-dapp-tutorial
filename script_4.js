@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const checkLight = () => {
     dappyRChain
-      .fetch("dappy://betanetwork/" + registryUri + ".light")
+      .fetch("dappy://" + registryUri + ".light")
       .then((a) => {
         const rholangTerm = JSON.parse(a).expr[0];
         if (!rholangTerm) {
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const loadFilesModule = () => {
     dappyRChain
-      .fetch("dappy://betanetwork/REGISTRY_URI")
+      .fetch("dappy://REGISTRY_URI")
       .then((a) => {
         console.log(a);
         const rholangTerm = JSON.parse(a).expr[0];
