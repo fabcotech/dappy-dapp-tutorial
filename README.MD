@@ -88,9 +88,9 @@ We will use those values in further steps.
 
 **Note** : `dappyRChain.fetch("dappy://REGISTRY_URI")` is not the same as `dappyRChain.fetch("dappy://REGSTRY_URI.FILE_ID")`, the first one gets the description of the files module, the second one gets the `index` file for this files module.
 
-**Note 2** : If you alreadu know the ID of the dappy network you will work with, you can write complete dappy address instead of shortcut addresses. `dappyRChain.fetch("dappy://REGISTRY_URI")` -> `dappyRChain.fetch("dappy://deltanetwork/REGISTRY_URI")`. Keeping the shortcut notation is simpler though, because you don't need to think about which network you are working with, the browser will resolve it automatically.
+**Note 2** : If you know the dappy network you will work with, you can write complete dappy address : `dappyRChain.fetch("dappy://NETWORK/REGISTRY_URI")`. Keeping the shortcut notation `dappyRChain.fetch("dappy://REGISTRY_URI")` is simpler though, because you don't need to think about which network you are working with, the browser will resolve it automatically.
 
-The `index` file ID is where our dapp is stored, we will create a file with file ID "light", this file will contain the on/off value.
+The `index` file ID is where our dapp is stored, in the same file smodule, we will create a file with file ID "light", this file will contain the on/off value.
 
 #### About multi-requests
 
