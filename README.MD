@@ -6,9 +6,9 @@ Along this tutorial, we will build a simple web application. It will consist in 
 
 Dappy deals with two kind of content, IP applications and dapps, we are going to build a dapp, read more about dapps [here](https://fabco.gitbook.io/dappy/dapps).
 
-Please download ans install Dappy 0.3.3+ . [dappy.tech/download](https://dappy.tech/download)
+Please download ans install dappy browser 0.3.5+ . [dappy.tech/download](https://dappy.tech/download)
 
-**Note :** Up to date with dappy-cli 0.4.2 and Dappy beta release 0.3.3
+**Note :** Up to date with dappy-cli 0.4.4 and Dappy beta release 0.3.5
 
 ### Let's start
 
@@ -24,46 +24,50 @@ The tutorial will be divided in n steps, at each step please increment the `jsPa
 
 The default values in `dappy.config.json` are for the dappy delta network, connected to the RChain testnet.
 
-Please configure Dappy browser to connect to the right network (delta network (testnet) by default). See [general documentation](https://fabco.gitbook.io/dappy/dappy-browser).
+Please configure dappy browser to connect to the right network (delta network (testnet) by default). See [general documentation](https://fabco.gitbook.io/dappy/dappy-browser).
 
 ### Step 1
 
-In this first step, we will simply push a static web application the blockchain. Our web application is composed of `script_1.js` `style.css` and `index_1.html`. The `index_1.html` displays "Dapp loaded !" because we don't know yet if the interruptor is on or off.
+- `dappy.config.json jsPath` : `script_1.js`
+- `dappy.config.json htmlPath` : `index_1.html`
+
+In this first step, we will simply push a static web application the blockchain. The web application is composed of `script_1.js` `style.css` and `index_1.html`. The `index_1.html` displays "Dapp loaded !".
 
 ```
 npm run dappy:push
 ```
 
-If you encounter some error when pushing, make sure the rnode instances at `readOnlyHost` and `validatorHost` in `dappy.config.json` are running (`node2.testnet.rchain-dev.tk/status` path tells you about the status of the rnode). Also check that your private key has enough funds, and that phlo limit is not superior to that.
+If you encounter some error when pushing, make sure the rnode instances at `readOnlyHost` and `validatorHost` in `dappy.config.json` are running (`node2.testnet.rchain-dev.tk/status` path tells you about the status of the rnode instance on testnet). Also check that your private key has enough funds, and that phlo limit is not superior to that.
 
-Find the line `address :` log, this value is the blockchain address of the web application. You can now just paste it in the Dappy browser search bar and hit enter. You should have the web application loaded in the browser, with the **DA** label telling you it is a decentralized app (dapp). You can click on the **DA** to get network information.
+Find the line `address :` log, this value is the blockchain address of the web application. You can now just copy and paste it in the dappy browser search bar and hit enter. You should have the web application loaded in the browser, with the **DA** label telling you it is a decentralized app (dapp). You can click on the **DA** to get network information.
 
 You should just see the "Dapp loaded !" text 👌.
 
-If you encounter some error when loading in dappy browser, also check the network/resolver settings in Dappy and make sure you are connected to enough nodes. If you have only one endpoint, set the resolver settings to 1 / 100%.
+If you encounter some error when loading in dappy browser, also check the network/resolver settings in Dappy and make sure you are connected to enough nodes. If you have only one endpoint, set the resolver settings to _1 / 100%_.
 
 **Any issue** : share it with us at [https://discord.gg/8Cu5UFV](https://discord.gg/8Cu5UFV).
 
 You just deployed your first full dapp with Dappy, congratulations ! 🥳🥳
 
-You can activate the _Development mode_ in the settings to have the chrome devtool popping up when the application loads.
+Make sure you turned on the _Development mode_ in dappy browser's settings.
 
-#### About Dappy CLI and the files module
+#### About Dappy CLI and the rchain-token
 
-Dappy CLI command `dappy:push` uses the [files module](https://github.com/fabcotech/rholang-files-module) for handling files on the blockchain.
+Dappy CLI command `dappy:push` deploys a new instance of rchain-token, and creates a bag, this bag will represent a file, see [rchain-token#files](https://github.com/fabcotech/rchain-token/tree/files). In the case of our application, bag = file.
 
-The uploads (`dappy:push`) goes into 2 steps :
+The upload (`dappy:push`) goes into 2 steps :
 
-- Step A, a files module with no file in it is deployed, and the registry URIs are recovered. See [rholang files module](https://github.com/fabcotech/rholang-files-module#files-module) to understand what is being deployed and recovered.
-- Step B, if `REGISTRY_URI` is found in the javascript, css or html files, it is replaced with proper value from step 1. Then the file is compiled into a .dpy, and uploaded to the blockchain.
+- Step A, an empty rchain-token contract is deployed.
+- Step B, if `REGISTRY_URI`, or `FULL_ADDRESS` strings are found in the html or javascript, values are replaced. Then the file is compiled into a .dpy, and uploaded in the rchain-token contract as a data associated to bag `index`.
 
-The `registryUri` is the address of the files module, there is a unique file ID for each file stored in this files module. If you did not touch `manifest.fileId` in `dappy.config.json`, the value is "index".
+The registry URI is the address of the rchain-token contract, we use bags (see rchain-token#files) to represent files, each bag represents one file. The bag ID will be the `manifest.fileId` in `dappy.config.json`, `index` by default.
 
-In order to avoid re-deploying an entire files module each time (step A), you can simply update the file at each step. Get the registry URI from the logs, and put it in the proper place in `dappy.config.json`. Then just run `npm run dappy:update` instead of `npm run dappy:push`.
+In order to avoid re-deploying an entire rchain-token contract each time (step A), you can simply update the file at each step. Get the registry URI from the logs, and put it in the proper place in `dappy.config.json`. Then just run `npm run dappy:update` instead of `npm run dappy:push`.
 
 ### Step 2
 
-- `dappy.config.json` : `script_1.js` -> `script_2.js`
+- `dappy.config.json jsPath` : `script_2.js`
+- `dappy.config.json htmlPath` : `index_1.html`
 
 ```
 npm run dappy:push
@@ -78,19 +82,19 @@ registryUri is xxx"
 currentNonceValue is xxx"
 ```
 
-The first javascript file is empty. Take a look at the file `script_2.js`, it contains a `REGISTRY_URI` expression, dappy CLI will replace this by the actual registry URI. `dappyRChain.fetch("dappy://REGISTRY_URI")` when executed will get the description of the files module, this description contains the following keys:
+The first javascript file is empty. Take a look at the file `script_2.js`, it contains a `REGISTRY_URI` expression, dappy CLI will replace this by the actual registry URI. `dappyRChain.fetch("dappy://REGISTRY_URI")` when executed will get the rchain-token contract values (nonce, registry URI, public key etc.), this description contains the following keys:
 
 - `.registryUri`: the files module registry URI itself
 - `.nonce`: the value of the nonce that changes everytime an aciton is performed
-- `.files`: the list of files.
+- `.locked`: this value is only used for real tokens, see [rchain-token#files](https://github.com/fabcotech/rchain-token/tree/files).
 
 We will use those values in further steps.
 
-**Note** : `dappyRChain.fetch("dappy://REGISTRY_URI")` is not the same as `dappyRChain.fetch("dappy://REGSTRY_URI.FILE_ID")`, the first one gets the description of the files module, the second one gets the `index` file for this files module.
+**Note** : `dappyRChain.fetch("dappy://REGISTRY_URI")` is not the same as `dappyRChain.fetch("dappy://REGSTRY_URI.FILE_ID")`, the first one gets the rchain-token contract values, the second one gets the data associated with bag `index`.
 
 **Note 2** : If you know the dappy network you will work with, you can write complete dappy address : `dappyRChain.fetch("dappy://NETWORK/REGISTRY_URI")`. Keeping the shortcut notation `dappyRChain.fetch("dappy://REGISTRY_URI")` is simpler though, because you don't need to think about which network you are working with, the browser will resolve it automatically.
 
-The `index` file ID is where our dapp is stored, in the same file smodule, we will create a file with file ID "light", this file will contain the on/off value.
+So basically we have a rchain-token contract, with one bag with `index` as ID, the data associated with this bag is our html application. We will create a second bag, this time we will only attach a on/off value to it as data.
 
 #### About multi-requests
 
@@ -98,8 +102,8 @@ When doing `dappyRChain.fetch`, the network settings defined by the user are the
 
 ### Step 3
 
-- `dappy.config.json` : `script_2.js` -> `script_3.js`
-- `dappy.config.json` : `index_1.html` -> `index_2.html`
+- `dappy.config.json jsPath` : `script_3.js`
+- `dappy.config.json htmlPath` : `index_2.html`
 
 Check the `script_3.js` file, we will basically deploy the same thing, but also a function `checkLight` that does a `dappyRChain.fetch` to get the on/off value, and then changes the color of the body.
 
@@ -111,19 +115,20 @@ npm run dappy:push
 npm run dappy:update
 ```
 
-So now you should have the _Light is off_ text in the body. It means that the file "light" does not exist in our files module, or that it is off.
+So now you should have the _Light is off_ text in the body. It means that there is no bags with ID `light` in the rchain-token contract, it can also mean that the data associated with this bag is string "off".
 
 ### Step 4
 
-- `dappy.config.json` : `script_3.js` -> `script_4.js`
+- `dappy.config.json jsPath` : `script_4.js`
+- `dappy.config.json htmlPath` : `index_2.html`
 
 The `dappyRChain.fetch` function allows you to read from the blockchain, now how should we write / set some value on chain ? Dappy also exposes a `dappyRChain.transaction` function allowing you to deploy any arbitrary rholang code, and have the user requested to sign it (he can refuse or accept).
 
-The `script_4.js` listens for click events on the body `document.body.addEventListener('click'`, and deploys a RChain transaction to update the value on the private channel that is exposed through the `registryUri` registry (see rholang documentation if you want to know how the registry, and channel references work).
+The `script_4.js` listens for click events on the body `document.body.addEventListener('click'`, and deploys a RChain transaction. In the context of our application, a bag is synonym to a file. The transaction will update the data associated with bag `light` if this bag exists, or create this bag with the `create-tokens` method, see [rchain-token#files](https://github.com/fabcotech/rchain-token/tree/files). 
 
-The `"signature": "SIGN"` (script_4.js) is important, the value SIGN will be replaced by a signature of the string `currentNonceValue` that we send to Dappy browser. We cannot do this in the JS because we have no right to manipulate private key, dappy will do it for us.
+The `"signature": "SIGN"` (script_4.js) is important, the value SIGN will be replaced by a signature of the payload, that we send to dappy browser as a hexadecimal string. We cannot do this in the JS because we have no right to manipulate private key, dappy will do it for us.
 
-This signature is necessary for the files module to authentify us (rholang), you could eventually deploy another version of the files module that does not check signature, anyone could be able to switch the light 😩😩.
+This signature is necessary for the rchain-token contract (rholang) to authentify us.
 
 ```
 npm run dappy:push
@@ -139,7 +144,7 @@ You can stop the tab, or reload it.
 
 This tutorial is over. You can share the blockchain address with anyone connected to the same dappy network.
 
-This architecture does not need any server or third party service to exist, it is strictly relying on the blockchain platform and the Dappy network that is referenced in Dappy browser (the Dappy network is a subset of the blockchain platform).
+This architecture does not need any server or third party service to exist, it is strictly relying on the blockchain platform and the Dappy network that is referenced in dappy browser (the Dappy network is a subset of the blockchain platform).
 
 ### Going further
 
