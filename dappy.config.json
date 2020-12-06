@@ -8,12 +8,12 @@
   },
   "options": {
     "platform": "rchain",
-    "readOnlyHost": "https://observer.testnet.rchain.coop",
-    "readOnlyHostHttpPort": "443",
-    "validatorHost": "https://node2.testnet.rchain-dev.tk",
-    "validatorHostHttpPort": "443",
+    "readOnlyHost": "http://localhost",
+    "readOnlyHostHttpPort": "40403",
+    "validatorHost": "http://localhost",
+    "validatorHostHttpPort": "40403",
     "validatorHostgrpcProposePort": "40402",
-    "privateKey": "",
+    "privateKey": "a2803d16030f83757a5043e5c0e28573685f6d8bf4e358bf1385d82bffa8e698",
     "registryUri": ""
   }
 }

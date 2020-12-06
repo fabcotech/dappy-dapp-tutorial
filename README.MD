@@ -18,7 +18,7 @@ cd dappy-dapp-tutorial
 npm i
 ```
 
-🧐 You must first check the options in the `dappy.config.json`, add `privateKey` (secp256k1 keys), you can ignore `registryUri` and `manifest.fileId` for now. Leave the hosts and ports by default, `observer.testnet.rchain.coop` and `node2.testnet.rchain-dev.tk` are nodes of the RChain testnet. You can change those values to connect to your local node or another node, you must know a validator node and a read-only node. Check [dappy-cli](https://github.com/fabcotech/dappy-cli) documentation for deeper explanations
+🧐 You must first check the options in the `dappy.config.json`, add `privateKey`, you can ignore `registryUri` and `manifest.fileId` for now. Leave the hosts and ports by default, `observer.testnet.rchain.coop` and `node2.testnet.rchain-dev.tk` are nodes of the RChain testnet. You can change those values to connect to your local node or another node, you must know a validator node and a read-only node. Check [dappy-cli](https://github.com/fabcotech/dappy-cli) documentation for deeper explanations
 
 The tutorial will be divided in n steps, at each step please increment the `jsPath` value in `dappy.config.json` (`script_1` for step 1, `script_2` for step 2 etc...).
 
@@ -84,7 +84,7 @@ currentNonceValue is xxx"
 
 The first javascript file is empty. Take a look at the file `script_2.js`, it contains a `REGISTRY_URI` expression, dappy CLI will replace this by the actual registry URI. `dappyRChain.fetch("dappy://REGISTRY_URI")` when executed will get the rchain-token contract values (nonce, registry URI, public key etc.), this description contains the following keys:
 
-- `.registryUri`: the files module registry URI itself
+- `.registryUri`: the registry URI of the contract (rchain-token#files contract)
 - `.nonce`: the value of the nonce that changes everytime an aciton is performed
 - `.locked`: this value is only used for real tokens, see [rchain-token#files](https://github.com/fabcotech/rchain-token/tree/files).
 
@@ -124,7 +124,7 @@ So now you should have the _Light is off_ text in the body. It means that there 
 
 The `dappyRChain.fetch` function allows you to read from the blockchain, now how should we write / set some value on chain ? Dappy also exposes a `dappyRChain.transaction` function allowing you to deploy any arbitrary rholang code, and have the user requested to sign it (he can refuse or accept).
 
-The `script_4.js` listens for click events on the body `document.body.addEventListener('click'`, and deploys a RChain transaction. In the context of our application, a bag is synonym to a file. The transaction will update the data associated with bag `light` if this bag exists, or create this bag with the `create-tokens` method, see [rchain-token#files](https://github.com/fabcotech/rchain-token/tree/files). 
+The `script_4.js` listens for click events on the body `document.body.addEventListener('click'`, and deploys a RChain transaction. In the context of our application, a bag is synonym to a file. The transaction will update the data associated with bag `light` if this bag exists, or create this bag with the `create-tokens` method, see [rchain-token#files](https://github.com/fabcotech/rchain-token/tree/files).
 
 The `"signature": "SIGN"` (script_4.js) is important, the value SIGN will be replaced by a signature of the payload, that we send to dappy browser as a hexadecimal string. We cannot do this in the JS because we have no right to manipulate private key, dappy will do it for us.
 
